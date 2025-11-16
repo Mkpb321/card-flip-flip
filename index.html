@@ -1,1 +1,77 @@
-<h1>Hallo Velo 2</h1>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>card-flip-flip</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <h1>card-flip-flip</h1>
+    </header>
+
+    <main>
+      <!-- Homescreen -->
+      <section id="home-screen" class="screen active">
+        <h2>Kartensets auswählen</h2>
+
+        <div id="set-controls">
+          <button id="select-all" type="button">Alle auswählen</button>
+          <button id="select-none" type="button">Keine auswählen</button>
+        </div>
+
+        <div id="set-list" class="set-list">
+          <!-- Wird dynamisch aus data.js erzeugt -->
+        </div>
+
+        <div class="options">
+          <h3>Modus</h3>
+          <label>
+            <input type="radio" name="mode" value="once" checked />
+            Alle einmal (zufällige Reihenfolge)
+          </label>
+          <label>
+            <input type="radio" name="mode" value="random" />
+            Random (unendlich)
+          </label>
+        </div>
+
+        <div class="actions">
+          <button id="start-button" type="button" disabled>Start</button>
+        </div>
+
+        <p id="error-message" class="error-message" aria-live="polite"></p>
+      </section>
+
+      <!-- Flip Screen -->
+      <section id="flip-screen" class="screen">
+        <div class="flip-header">
+          <button id="back-to-home" type="button">&larr; Zurück</button>
+        </div>
+
+        <div class="card-wrapper">
+          <div class="card" id="card">
+            <div class="card-meta">
+              <span id="card-set-name" class="card-set-name"></span>
+              <span id="card-side-label" class="card-side-label"></span>
+            </div>
+            <div id="card-content" class="card-content">
+              <!-- Karteninhalt -->
+            </div>
+          </div>
+        </div>
+
+        <div class="flip-actions">
+          <button id="next-button" type="button">Weiter</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- WICHTIG: data.js vor script.js laden -->
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
