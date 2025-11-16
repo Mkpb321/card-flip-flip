@@ -1,4 +1,4 @@
-/* Vollbild-Grundlayout */
+/* Grundlayout ----------------------------------------------------------- */
 
 html,
 body {
@@ -8,14 +8,14 @@ body {
 }
 
 body {
-  font-family: "Times New Roman", Times, serif;
-  background: radial-gradient(circle at top, #0f172a 0, #020617 50%, #000000 100%);
-  color: #e5e7eb;
+  font-family: "Times New Roman", Georgia, serif;
+  background: #f4f5fb;
+  color: #222222;
   display: flex;
   justify-content: center;
 }
 
-/* App-Rahmen */
+/* App-Rahmen ------------------------------------------------------------ */
 
 .app {
   width: 100%;
@@ -27,12 +27,9 @@ body {
   flex-direction: column;
 }
 
-/* Überschriften */
-
 h1 {
   font-size: 1.6rem;
   margin: 0 0 8px;
-  letter-spacing: 0.03em;
 }
 
 h2 {
@@ -40,7 +37,7 @@ h2 {
   margin: 8px 0;
 }
 
-/* Hauptbereich */
+/* Hauptbereich ---------------------------------------------------------- */
 
 main {
   margin-top: 8px;
@@ -59,7 +56,7 @@ main {
   display: block;
 }
 
-/* Flip-Screen soll den Platz ausfüllen */
+/* Flip-Screen füllt den Platz ------------------------------------------ */
 
 #flip-screen.screen.active {
   display: flex;
@@ -67,7 +64,7 @@ main {
   flex: 1;
 }
 
-/* Einfache Zeilenanordnung */
+/* Zeilen / Controls ----------------------------------------------------- */
 
 .row {
   margin: 6px 0;
@@ -75,16 +72,16 @@ main {
   gap: 8px;
 }
 
-/* Set-Liste */
+/* Set-Liste ------------------------------------------------------------- */
 
 .set-list {
-  border-radius: 10px;
-  border: 1px solid rgba(148, 163, 184, 0.7);
+  border-radius: 8px;
+  border: 1px solid #d4d4d8;
   padding: 6px;
   max-height: 260px;
   overflow-y: auto;
   margin-bottom: 10px;
-  background: rgba(15, 23, 42, 0.8);
+  background: #ffffff;
 }
 
 .set-row {
@@ -92,7 +89,7 @@ main {
 }
 
 .set-row + .set-row {
-  border-top: 1px solid rgba(30, 64, 175, 0.4);
+  border-top: 1px solid #e5e7eb;
 }
 
 .set-label {
@@ -103,22 +100,22 @@ main {
   margin-left: 4px;
 }
 
-/* Modus-Optionen */
+/* Modus-Optionen -------------------------------------------------------- */
 
 .options {
   margin: 8px 0;
   font-size: 0.95rem;
 }
 
-/* Fehlertext */
+/* Fehlermeldung --------------------------------------------------------- */
 
 .error-message {
   min-height: 1.2em;
-  color: #fecaca;
+  color: #b91c1c;
   font-size: 0.9rem;
 }
 
-/* Karte – Herzstück der App */
+/* Karte – Fokusbereich -------------------------------------------------- */
 
 .card-wrapper {
   margin-top: 10px;
@@ -126,90 +123,92 @@ main {
   display: flex;
 }
 
+/* Karte soll den gesamten restlichen Bereich einnehmen */
 .card {
   flex: 1;
-  border-radius: 18px;
-  border: 1px solid rgba(148, 163, 184, 0.7);
+  border-radius: 16px;
+  border: 1px solid #d4d4d8;
+  background: #ffffff;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
   padding: 18px;
   box-sizing: border-box;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
 
-  background: radial-gradient(circle at top left, #1d4ed8 0, #0f172a 45%, #020617 100%);
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.9);
-
+  /* leichte „Tiefe“, damit das Reindrücken sichtbar wird */
   transform: translateY(0);
-  transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
+  transition: transform 0.12s ease-out, box-shadow 0.12s ease-out;
 }
 
-/* kleine „Press“-Animation, wenn der Flip-Screen gedrückt wird */
-#flip-screen:active .card {
-  transform: scale(0.985) translateY(1px);
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.8);
-}
-
-/* Seitenlabel ist ausgeblendet, bleibt aber für Screenreader da, falls nötig */
-
+/* Kein Seitenlabel sichtbar, bleibt aber im DOM */
 .card-side-label {
   display: none;
 }
 
-/* Kartentext: groß, gut lesbar, viel Luft */
-
+/* Kartentext: groß & ruhig */
 .card-content {
-  font-size: 2.1rem;
-  line-height: 1.5;
-  color: #f9fafb;
-  padding: 0 8px;
+  padding: 0 12px;
+  font-size: clamp(1.7rem, 4vw, 2.4rem);
+  line-height: 1.6;
+  color: #111827;
 }
 
-/* Buttons – klar, freundlich, gut klickbar */
+/* „Reindrücken“-Effekt beim Klicken/Tappen auf den Flip-Screen
+   (gilt für Klicks irgendwo im Flip-Screen, nicht nur auf der Karte)
+*/
+#flip-screen:active .card {
+  transform: translateY(3px) scale(0.985);
+  box-shadow: 0 3px 8px rgba(15, 23, 42, 0.14);
+}
+
+/* Buttons – schlicht, freundlich --------------------------------------- */
 
 button {
   font: inherit;
   font-size: 0.95rem;
   padding: 6px 14px;
   border-radius: 999px;
-  border: 1px solid rgba(148, 163, 184, 0.9);
+  border: 1px solid #cbd5e1;
   min-width: 80px;
-  min-height: 40px;
+  min-height: 36px;
   cursor: pointer;
 
-  background: linear-gradient(135deg, #facc15, #eab308);
+  background: linear-gradient(180deg, #ffffff, #e5e7eb);
   color: #111827;
-  box-shadow: 0 4px 10px rgba(234, 179, 8, 0.45);
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.15);
 
   -webkit-appearance: none;
   appearance: none;
-  transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
+  transition: background 0.1s ease, box-shadow 0.1s ease,
+    transform 0.08s ease;
 }
 
 button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 20px rgba(234, 179, 8, 0.6);
-  filter: brightness(1.03);
+  background: linear-gradient(180deg, #f9fafb, #e5e7eb);
+  box-shadow: 0 3px 6px rgba(15, 23, 42, 0.18);
 }
 
 button:active {
-  transform: translateY(0);
-  box-shadow: 0 3px 8px rgba(234, 179, 8, 0.5);
+  transform: translateY(1px);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.2);
 }
 
 button:disabled {
-  background: linear-gradient(135deg, #9ca3af, #6b7280);
-  color: #111827;
+  background: #f3f4f6;
+  color: #9ca3af;
   box-shadow: none;
   cursor: default;
 }
 
-/* Kleine Optimierung für sehr kleine Displays */
+/* Kleine Optimierungen für sehr kleine Displays ------------------------ */
 
 @media (max-width: 480px) {
   .app {
-    padding: 10px;
+    padding: 8px;
   }
 
   .card {
@@ -217,6 +216,10 @@ button:disabled {
   }
 
   .card-content {
-    font-size: 1.8rem;
+    font-size: clamp(1.5rem, 5vw, 2.1rem);
+  }
+
+  .row {
+    flex-wrap: wrap;
   }
 }
