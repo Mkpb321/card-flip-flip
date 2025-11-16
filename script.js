@@ -22,9 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const modeRadios = document.querySelectorAll('input[name="mode"]');
 
   const backToHomeBtn = document.getElementById("back-to-home");
-  const nextButton = document.getElementById("next-button");
   const cardElement = document.getElementById("card");
-  const cardSetNameEl = document.getElementById("card-set-name");
   const cardSideLabelEl = document.getElementById("card-side-label");
   const cardContentEl = document.getElementById("card-content");
 
@@ -84,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
       checkbox.type = "checkbox";
       checkbox.className = "set-checkbox";
       checkbox.dataset.index = String(index);
-      checkbox.checked = true;
+      checkbox.checked = false; // Beim Laden: NICHT ausgewählt
 
       const nameSpan = document.createElement("span");
       nameSpan.className = "set-name";
@@ -118,7 +116,6 @@ document.addEventListener("DOMContentLoaded", () => {
     state.shuffledIndices = [];
     state.showingFront = true;
 
-    cardSetNameEl.textContent = "";
     cardSideLabelEl.textContent = "";
     cardContentEl.textContent = "";
   }
@@ -126,16 +123,12 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateCardDisplay() {
     if (!state.currentCard) return;
 
-    cardSetNameEl.textContent = state.currentCard.setName || "";
-    cardSideLabelEl.textContent = state.showingFront ? "Vorderseite" : "Rückseite";
+    cardSideLabelEl.textContent = state.showingFront
+      ? "Vorderseite"
+      : "Rückseite";
     cardContentEl.textContent = state.showingFront
       ? state.currentCard.front
       : state.currentCard.back;
-
-    // kleine Animation
-    cardElement.classList.remove("card-flip");
-    void cardElement.offsetWidth; // Reflow, um Animation neu zu starten
-    cardElement.classList.add("card-flip");
   }
 
   function startNewCard() {
@@ -148,10 +141,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (state.mode === "once") {
       if (state.currentIndex >= state.shuffledIndices.length) {
-        // alle Karten einmal gezeigt -> zurück zum Homescreen
+        // alle Karten einmal gezeigt -> leise zurück zum Homescreen
         resetFlipScreen();
         showScreen("home");
-        errorMessage.textContent = "Alle ausgewählten Karten wurden einmal gezeigt.";
+        // KEINE Fehlermeldung mehr
         return;
       }
 
@@ -183,8 +176,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ) {
           flat.push({
             front: card.front,
-            back: card.back,
-            setName: set.name || ""
+            back: card.back
           });
         }
       });
@@ -212,6 +204,21 @@ document.addEventListener("DOMContentLoaded", () => {
     errorMessage.textContent = "";
     showScreen("flip");
     startNewCard();
+  }
+
+  function handleNext() {
+    if (!state.currentCard) {
+      startNewCard();
+      return;
+    }
+
+    // Erst Vorderseite, dann Rückseite, dann nächste Karte
+    if (state.showingFront) {
+      state.showingFront = false;
+      updateCardDisplay();
+    } else {
+      startNewCard();
+    }
   }
 
   // --- Event Listener ---
@@ -261,33 +268,21 @@ document.addEventListener("DOMContentLoaded", () => {
     showScreen("home");
   });
 
-  nextButton.addEventListener("click", () => {
-    if (!state.currentCard) {
-      startNewCard();
-      return;
-    }
-
-    // Erst Vorderseite, dann Rückseite, dann nächste Karte
-    if (state.showingFront) {
-      state.showingFront = false;
-      updateCardDisplay();
-    } else {
-      startNewCard();
-    }
-  });
+  // Auf die Karte tippen/klicken, um weiter zu gehen
+  cardElement.addEventListener("click", handleNext);
 
   // Bonus: Flip per Space-Taste
   document.addEventListener("keydown", (event) => {
     if (!flipScreen.classList.contains("active")) return;
     if (event.code === "Space") {
       event.preventDefault();
-      nextButton.click();
+      handleNext();
     }
   });
 
   // --- Daten initial aus data.js übernehmen ---
 
-  if (Array.isArray(typeof CARD_SETS !== "undefined" ? CARD_SETS : [])) {
+  if (typeof CARD_SETS !== "undefined" && Array.isArray(CARD_SETS)) {
     state.sets = CARD_SETS;
     renderSetList();
   } else {

@@ -8,16 +8,14 @@
 </head>
 <body>
   <div class="app">
-    <header class="app-header">
-      <h1>card-flip-flip</h1>
-    </header>
+    <h1>card-flip-flip</h1>
 
     <main>
       <!-- Homescreen -->
       <section id="home-screen" class="screen active">
         <h2>Kartensets auswählen</h2>
 
-        <div id="set-controls">
+        <div class="row">
           <button id="select-all" type="button">Alle auswählen</button>
           <button id="select-none" type="button">Keine auswählen</button>
         </div>
@@ -27,18 +25,19 @@
         </div>
 
         <div class="options">
-          <h3>Modus</h3>
+          <p>Modus:</p>
           <label>
             <input type="radio" name="mode" value="once" checked />
             Alle einmal (zufällige Reihenfolge)
           </label>
+          <br />
           <label>
             <input type="radio" name="mode" value="random" />
             Random (unendlich)
           </label>
         </div>
 
-        <div class="actions">
+        <div class="row">
           <button id="start-button" type="button" disabled>Start</button>
         </div>
 
@@ -47,25 +46,20 @@
 
       <!-- Flip Screen -->
       <section id="flip-screen" class="screen">
-        <div class="flip-header">
+        <div class="row">
           <button id="back-to-home" type="button">&larr; Zurück</button>
         </div>
 
         <div class="card-wrapper">
           <div class="card" id="card">
-            <div class="card-meta">
-              <span id="card-set-name" class="card-set-name"></span>
-              <span id="card-side-label" class="card-side-label"></span>
-            </div>
+            <div class="card-side-label" id="card-side-label"></div>
             <div id="card-content" class="card-content">
               <!-- Karteninhalt -->
             </div>
           </div>
         </div>
 
-        <div class="flip-actions">
-          <button id="next-button" type="button">Weiter</button>
-        </div>
+        <!-- Kein Weiter-Button mehr -->
       </section>
     </main>
   </div>
