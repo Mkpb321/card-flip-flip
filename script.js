@@ -2,7 +2,7 @@
 
 const state = {
   sets: [],
-  mode: "once", // "once" | "random"
+  mode: "random", // Standard: random
   flatCards: [],
   shuffledIndices: [],
   currentIndex: 0,
@@ -26,11 +26,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const cardSideLabelEl = document.getElementById("card-side-label");
   const cardContentEl = document.getElementById("card-content");
 
-  // Initialer Modus aus Radio-Buttons
-  const initiallyCheckedMode = document.querySelector(
-    'input[name="mode"]:checked'
+  // Standardmodus: random
+  const randomRadio = document.querySelector(
+    'input[name="mode"][value="random"]'
   );
-  state.mode = initiallyCheckedMode ? initiallyCheckedMode.value : "once";
+  const onceRadio = document.querySelector(
+    'input[name="mode"][value="once"]'
+  );
+  if (randomRadio) randomRadio.checked = true;
+  if (onceRadio) onceRadio.checked = false;
+  state.mode = "random";
 
   // --- Hilfsfunktionen ---
 
@@ -123,9 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateCardDisplay() {
     if (!state.currentCard) return;
 
-    cardSideLabelEl.textContent = state.showingFront
-      ? "Vorderseite"
-      : "Rückseite";
+    // Vorder-/Rückseite nicht mehr anzeigen
     cardContentEl.textContent = state.showingFront
       ? state.currentCard.front
       : state.currentCard.back;
@@ -144,7 +147,6 @@ document.addEventListener("DOMContentLoaded", () => {
         // alle Karten einmal gezeigt -> leise zurück zum Homescreen
         resetFlipScreen();
         showScreen("home");
-        // KEINE Fehlermeldung mehr
         return;
       }
 
@@ -263,18 +265,30 @@ document.addEventListener("DOMContentLoaded", () => {
     initFlipGame(selected);
   });
 
-  backToHomeBtn.addEventListener("click", () => {
+  backToHomeBtn.addEventListener("click", (event) => {
+    event.stopPropagation(); // Klick soll nicht als "weiter" zählen
     resetFlipScreen();
     showScreen("home");
   });
 
-  // Auf die Karte tippen/klicken, um weiter zu gehen
-  cardElement.addEventListener("click", handleNext);
+  // Auf den ganzen Flip-Screen klicken, um weiter zu gehen (auch unter der Karte)
+  flipScreen.addEventListener("click", (event) => {
+    // Klick auf Zurück-Button ignorieren
+    if (event.target === backToHomeBtn) return;
+    if (event.target.closest && event.target.closest("#back-to-home")) return;
+    handleNext();
+  });
 
-  // Bonus: Flip per Space-Taste
+  // Flip per Space- oder Enter-Taste
   document.addEventListener("keydown", (event) => {
     if (!flipScreen.classList.contains("active")) return;
-    if (event.code === "Space") {
+
+    const isSpace =
+      event.code === "Space" || event.key === " ";
+    const isEnter =
+      event.code === "Enter" || event.key === "Enter";
+
+    if (isSpace || isEnter) {
       event.preventDefault();
       handleNext();
     }

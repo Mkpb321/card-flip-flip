@@ -36,26 +36,26 @@ const CARD_SETS = [
   },
 
   {
-    name: "λύω – Schwacher Aorist (1. Aorist)",
+    name: "λύω – Schwacher Aorist",
     cards: [
-      { front: "ἔλυσα", back: "1. Sg. Aor. (1) Ind. Akt." },
-      { front: "ἔλυσας", back: "2. Sg. Aor. (1) Ind. Akt." },
-      { front: "ἔλυσε(ν)", back: "3. Sg. Aor. (1) Ind. Akt." },
-      { front: "ἐλύσαμεν", back: "1. Pl. Aor. (1) Ind. Akt." },
-      { front: "ἐλύσατε", back: "2. Pl. Aor. (1) Ind. Akt." },
-      { front: "ἔλυσαν", back: "3. Pl. Aor. (1) Ind. Akt." }
+      { front: "ἔλυσα", back: "1. Sg. Aor. Ind. Akt." },
+      { front: "ἔλυσας", back: "2. Sg. Aor. Ind. Akt." },
+      { front: "ἔλυσε(ν)", back: "3. Sg. Aor. Ind. Akt." },
+      { front: "ἐλύσαμεν", back: "1. Pl. Aor. Ind. Akt." },
+      { front: "ἐλύσατε", back: "2. Pl. Aor. Ind. Akt." },
+      { front: "ἔλυσαν", back: "3. Pl. Aor. Ind. Akt." }
     ]
   },
 
   {
-    name: "λαμβάνω – Starker Aorist (2. Aorist)",
+    name: "λαμβάνω – Starker Aorist",
     cards: [
-      { front: "ἔλαβον", back: "1. Sg. Aor. (2) Ind. Akt." },
-      { front: "ἔλαβες", back: "2. Sg. Aor. (2) Ind. Akt." },
-      { front: "ἔλαβε(ν)", back: "3. Sg. Aor. (2) Ind. Akt." },
-      { front: "ἐλάβομεν", back: "1. Pl. Aor. (2) Ind. Akt." },
-      { front: "ἐλάβετε", back: "2. Pl. Aor. (2) Ind. Akt." },
-      { front: "ἔλαβον", back: "3. Pl. Aor. (2) Ind. Akt." }
+      { front: "ἔλαβον", back: "1. Sg. Aor. Ind. Akt." },
+      { front: "ἔλαβες", back: "2. Sg. Aor. Ind. Akt." },
+      { front: "ἔλαβε(ν)", back: "3. Sg. Aor. Ind. Akt." },
+      { front: "ἐλάβομεν", back: "1. Pl. Aor. Ind. Akt." },
+      { front: "ἐλάβετε", back: "2. Pl. Aor. Ind. Akt." },
+      { front: "ἔλαβον", back: "3. Pl. Aor. Ind. Akt." }
     ]
   }
 ];
