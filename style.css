@@ -346,13 +346,13 @@ button:active {
   flex: 1;
   margin-top: 0.1rem;
   padding: 0.8rem 0.7rem 1rem;
-  border-radius: 22px;
-  background: var(--bg-strong);
-  box-shadow: inset 0 0 0 1px rgba(229, 231, 235, 0.9);
+  border-radius: 2px;
+  background: transparent;   /* Hintergrund transparent */
+  box-shadow: none;          /* Border/Shadow entfernt */
   display: flex;
-  align-items: center;       /* vertikal zentrieren */
-  justify-content: center;   /* horizontal zentrieren */
-  text-align: center;        /* Text mittig */
+  align-items: center;        /* vertikal zentrieren */
+  justify-content: center;    /* horizontal zentrieren */
+  text-align: center;         /* Text mittig */
   font-size: clamp(1.6rem, 3.5vw + 0.8rem, 2.55rem);
   font-weight: 650;
   line-height: 1.3;
@@ -360,6 +360,7 @@ button:active {
   word-wrap: break-word;
   overflow-y: auto;
 }
+
 
 /* Scrollbalken in Karte etwas dezenter */
 .card-content::-webkit-scrollbar {
