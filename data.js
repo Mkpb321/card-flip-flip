@@ -57,5 +57,76 @@ const CARD_SETS = [
       { front: "ἐλάβετε", back: "2. Pl. Aor. Ind. Akt." },
       { front: "ἔλαβον", back: "3. Pl. Aor. Ind. Akt." }
     ]
+  },
+  // Partizip Aktiv Präsens – λύω (m., f., n. entlang der Deklination)
+  {
+    name: "λύω – Partizip Aktiv Präsens",
+    cards: [
+      // Maskulinum
+      { front: "λύων", back: "Part. Nom. Sg. m. Part. Akt. Präs." },
+      { front: "λύοντος", back: "Part. Gen. Sg. m. Part. Akt. Präs." },
+      { front: "λύοντι", back: "Part. Dat. Sg. m. Part. Akt. Präs." },
+      { front: "λύοντα", back: "Part. Akk. Sg. m. Part. Akt. Präs." },
+      { front: "λύοντες", back: "Part. Nom. Pl. m. Part. Akt. Präs." },
+      { front: "λυόντων", back: "Part. Gen. Pl. m. Part. Akt. Präs." },
+      { front: "λύουσι(ν)", back: "Part. Dat. Pl. m. Part. Akt. Präs." },
+      { front: "λύοντας", back: "Part. Akk. Pl. m. Part. Akt. Präs." },
+
+      // Femininum
+      { front: "λύουσα", back: "Part. Nom. Sg. f. Part. Akt. Präs." },
+      { front: "λυούσης", back: "Part. Gen. Sg. f. Part. Akt. Präs." },
+      { front: "λυούσῃ", back: "Part. Dat. Sg. f. Part. Akt. Präs." },
+      { front: "λύουσαν", back: "Part. Akk. Sg. f. Part. Akt. Präs." },
+      { front: "λύουσαι", back: "Part. Nom. Pl. f. Part. Akt. Präs." },
+      { front: "λυουσῶν", back: "Part. Gen. Pl. f. Part. Akt. Präs." },
+      { front: "λυούσαις", back: "Part. Dat. Pl. f. Part. Akt. Präs." },
+      { front: "λυούσας", back: "Part. Akk. Pl. f. Part. Akt. Präs." },
+
+      // Neutrum
+      { front: "λῦον", back: "Part. Nom. Sg. n. Part. Akt. Präs." },
+      { front: "λύοντος", back: "Part. Gen. Sg. n. Part. Akt. Präs." },
+      { front: "λύοντι", back: "Part. Dat. Sg. n. Part. Akt. Präs." },
+      { front: "λῦον", back: "Part. Akk. Sg. n. Part. Akt. Präs." },
+      { front: "λύοντα", back: "Part. Nom. Pl. n. Part. Akt. Präs." },
+      { front: "λυόντων", back: "Part. Gen. Pl. n. Part. Akt. Präs." },
+      { front: "λύουσι(ν)", back: "Part. Dat. Pl. n. Part. Akt. Präs." },
+      { front: "λύοντα", back: "Part. Akk. Pl. n. Part. Akt. Präs." }
+    ]
+  },
+
+  // Partizip Aktiv Futur – λύω (m., f., n. entlang der Deklination)
+  {
+    name: "λύω – Partizip Aktiv Futur",
+    cards: [
+      // Maskulinum
+      { front: "λύσων", back: "Part. Nom. Sg. m. Part. Akt. Fut." },
+      { front: "λύσοντος", back: "Part. Gen. Sg. m. Part. Akt. Fut." },
+      { front: "λύσοντι", back: "Part. Dat. Sg. m. Part. Akt. Fut." },
+      { front: "λύσοντα", back: "Part. Akk. Sg. m. Part. Akt. Fut." },
+      { front: "λύσοντες", back: "Part. Nom. Pl. m. Part. Akt. Fut." },
+      { front: "λυσόντων", back: "Part. Gen. Pl. m. Part. Akt. Fut." },
+      { front: "λύσουσι(ν)", back: "Part. Dat. Pl. m. Part. Akt. Fut." },
+      { front: "λύσοντας", back: "Part. Akk. Pl. m. Part. Akt. Fut." },
+
+      // Femininum
+      { front: "λύσουσα", back: "Part. Nom. Sg. f. Part. Akt. Fut." },
+      { front: "λυσούσης", back: "Part. Gen. Sg. f. Part. Akt. Fut." },
+      { front: "λυσούσῃ", back: "Part. Dat. Sg. f. Part. Akt. Fut." },
+      { front: "λύσουσαν", back: "Part. Akk. Sg. f. Part. Akt. Fut." },
+      { front: "λύσουσαι", back: "Part. Nom. Pl. f. Part. Akt. Fut." },
+      { front: "λυσουσῶν", back: "Part. Gen. Pl. f. Part. Akt. Fut." },
+      { front: "λυσούσαις", back: "Part. Dat. Pl. f. Part. Akt. Fut." },
+      { front: "λυσούσας", back: "Part. Akk. Pl. f. Part. Akt. Fut." },
+
+      // Neutrum
+      { front: "λῦσον", back: "Part. Nom. Sg. n. Part. Akt. Fut." },
+      { front: "λύσοντος", back: "Part. Gen. Sg. n. Part. Akt. Fut." },
+      { front: "λύσοντι", back: "Part. Dat. Sg. n. Part. Akt. Fut." },
+      { front: "λῦσον", back: "Part. Akk. Sg. n. Part. Akt. Fut." },
+      { front: "λύσοντα", back: "Part. Nom. Pl. n. Part. Akt. Fut." },
+      { front: "λυσόντων", back: "Part. Gen. Pl. n. Part. Akt. Fut." },
+      { front: "λύσουσι(ν)", back: "Part. Dat. Pl. n. Part. Akt. Fut." },
+      { front: "λύσοντα", back: "Part. Akk. Pl. n. Part. Akt. Fut." }
+    ]
   }
 ];

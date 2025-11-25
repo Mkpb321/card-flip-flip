@@ -1,0 +1,17 @@
+Duplikat-Report für data.js
+================================
+
+Front-Wert: "ἔλαβον"
+Anzahl Vorkommen: 2
+  - Set: λαμβάνω – Starker Aorist (Zeile 53)
+    Back: "1. Sg. Aor. Ind. Akt."
+  - Set: λαμβάνω – Starker Aorist (Zeile 58)
+    Back: "3. Pl. Aor. Ind. Akt."
+
+Front-Wert: "ἔλυον"
+Anzahl Vorkommen: 2
+  - Set: λύω – Imperfekt (Zeile 17)
+    Back: "1. Sg. Impf. Ind. Akt."
+  - Set: λύω – Imperfekt (Zeile 22)
+    Back: "3. Pl. Impf. Ind. Akt."
+
