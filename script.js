@@ -136,7 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function startNewCard() {
-    // --- Random Balanced: zuerst Set wählen, dann Karte ---
+    // --- Unendlich Balanced: zuerst Set wählen, dann Karte ---
     if (state.mode === "randomBalanced") {
       if (!state.selectedSets.length) {
         resetFlipScreen();
