@@ -270,6 +270,34 @@ button:active {
   accent-color: var(--accent);
 }
 
+/* Neuer Balanced-Label + Info-Icon */
+.mode-balanced-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.mode-info {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  border: 1px solid var(--border-subtle);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  cursor: help;
+  line-height: 1;
+}
+
+.mode-info:hover {
+  background: rgba(79, 70, 229, 0.16);
+  border-color: var(--accent-strong);
+}
+
 /* Fehlertext */
 .error-message {
   margin-top: 0.6rem;

@@ -39,14 +39,29 @@
 
         <div class="options">
           <h2>Modus:</h2>
+
           <label>
-            <input type="radio" name="mode" value="once" checked />
+            <input type="radio" name="mode" value="once" />
             Jede Karte einmal
           </label>
           <br />
+
           <label>
             <input type="radio" name="mode" value="random" />
             Unendlich
+          </label>
+          <br />
+
+          <label class="mode-balanced-label">
+            <input type="radio" name="mode" value="randomBalanced" checked />
+            Random balanced
+            <span
+              class="mode-info"
+              aria-label="Wählt zuerst zufällig ein Set und dann eine Karte daraus, sodass jedes Set gleich oft dran kommt."
+              title="Wählt zuerst zufällig ein Set und dann eine Karte daraus, sodass jedes Set gleich oft dran kommt."
+            >
+              i
+            </span>
           </label>
         </div>
 

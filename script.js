@@ -2,12 +2,14 @@
 
 const state = {
   sets: [],
-  mode: "random", // Standard: random
+  mode: "randomBalanced", // Standard: randomBalanced
   flatCards: [],
   shuffledIndices: [],
   currentIndex: 0,
   currentCard: null,
-  showingFront: true
+  showingFront: true,
+  // Für den balanced-Modus: Sets mit ihren Karten separat speichern
+  selectedSets: []
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -26,16 +28,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const cardSideLabelEl = document.getElementById("card-side-label");
   const cardContentEl = document.getElementById("card-content");
 
-  // Standardmodus: random
-  const randomRadio = document.querySelector(
-    'input[name="mode"][value="random"]'
+  // Standardmodus: randomBalanced
+  const randomBalancedRadio = document.querySelector(
+    'input[name="mode"][value="randomBalanced"]'
   );
-  const onceRadio = document.querySelector(
-    'input[name="mode"][value="once"]'
-  );
-  if (randomRadio) randomRadio.checked = true;
-  if (onceRadio) onceRadio.checked = false;
-  state.mode = "random";
+  if (randomBalancedRadio) {
+    randomBalancedRadio.checked = true;
+    state.mode = "randomBalanced";
+  }
 
   // --- Hilfsfunktionen ---
 
@@ -116,6 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function resetFlipScreen() {
     state.flatCards = [];
+    state.selectedSets = [];
     state.currentCard = null;
     state.currentIndex = 0;
     state.shuffledIndices = [];
@@ -135,6 +136,37 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function startNewCard() {
+    // --- Random Balanced: zuerst Set wählen, dann Karte ---
+    if (state.mode === "randomBalanced") {
+      if (!state.selectedSets.length) {
+        resetFlipScreen();
+        showScreen("home");
+        errorMessage.textContent =
+          "Die ausgewählten Sets enthalten keine gültigen Karten.";
+        return;
+      }
+
+      const setIndex = Math.floor(Math.random() * state.selectedSets.length);
+      const chosenSet = state.selectedSets[setIndex];
+
+      if (!chosenSet.cards || !chosenSet.cards.length) {
+        resetFlipScreen();
+        showScreen("home");
+        errorMessage.textContent =
+          "Die ausgewählten Sets enthalten keine gültigen Karten.";
+        return;
+      }
+
+      const cardIndex = Math.floor(Math.random() * chosenSet.cards.length);
+      state.currentCard = chosenSet.cards[cardIndex];
+
+      state.showingFront = true;
+      updateCardDisplay();
+      return;
+    }
+
+    // --- Modus "once" und "random" wie bisher mit flatCards ---
+
     if (!state.flatCards.length) {
       resetFlipScreen();
       showScreen("home");
@@ -153,7 +185,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const indexInFlat = state.shuffledIndices[state.currentIndex];
       state.currentIndex += 1;
       state.currentCard = state.flatCards[indexInFlat];
-    } else {
+    } else if (state.mode === "random") {
       // random: jedes Mal zufällig eine Karte
       const randomIndex = Math.floor(Math.random() * state.flatCards.length);
       state.currentCard = state.flatCards[randomIndex];
@@ -165,10 +197,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function initFlipGame(selectedIndices) {
     const flat = [];
+    const selectedSetsForBalanced = [];
 
     selectedIndices.forEach((setIndex) => {
       const set = state.sets[setIndex];
       if (!set || !Array.isArray(set.cards)) return;
+
+      const validCards = [];
 
       set.cards.forEach((card) => {
         if (
@@ -176,15 +211,28 @@ document.addEventListener("DOMContentLoaded", () => {
           typeof card.front === "string" &&
           typeof card.back === "string"
         ) {
-          flat.push({
+          const normalizedCard = {
             front: card.front,
             back: card.back
-          });
+          };
+
+          // Für "once" und "random"
+          flat.push(normalizedCard);
+
+          // Für "randomBalanced"
+          validCards.push(normalizedCard);
         }
       });
+
+      if (validCards.length > 0) {
+        selectedSetsForBalanced.push({
+          name: set.name || `Set ${setIndex + 1}`,
+          cards: validCards
+        });
+      }
     });
 
-    if (!flat.length) {
+    if (!flat.length || !selectedSetsForBalanced.length) {
       resetFlipScreen();
       showScreen("home");
       errorMessage.textContent =
@@ -193,6 +241,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     state.flatCards = flat;
+    state.selectedSets = selectedSetsForBalanced;
     state.currentCard = null;
     state.currentIndex = 0;
     state.showingFront = true;
