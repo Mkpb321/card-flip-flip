@@ -93,6 +93,14 @@ document.addEventListener("DOMContentLoaded", () => {
       nameSpan.className = "set-name";
       nameSpan.textContent = set.name || `Set ${index + 1}`;
 
+      // NEU: Sets mit "Partizip" im Namen leicht rot hervorheben
+      if (typeof set.name === "string" && set.name.includes("Partizip")) {
+        // Hintergrund leicht rötlich
+        row.style.backgroundColor = "rgba(248, 113, 113, 0.08)";
+        // Textfarbe dezent rot
+        // nameSpan.style.color = "#b91c1c";
+      }
+
       label.appendChild(checkbox);
       label.appendChild(nameSpan);
       row.appendChild(label);
@@ -332,10 +340,8 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("keydown", (event) => {
     if (!flipScreen.classList.contains("active")) return;
 
-    const isSpace =
-      event.code === "Space" || event.key === " ";
-    const isEnter =
-      event.code === "Enter" || event.key === "Enter";
+    const isSpace = event.code === "Space" || event.key === " ";
+    const isEnter = event.code === "Enter" || event.key === "Enter";
 
     if (isSpace || isEnter) {
       event.preventDefault();
