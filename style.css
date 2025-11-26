@@ -205,7 +205,8 @@ button:active {
   background: #f9fafb;
   border: 1px solid var(--border-subtle);
   padding: 0.5rem 0.2rem;
-  max-height: 360px;
+  /* max-height: 360px; */
+  max-height: 340px;
   overflow: auto;
   margin-bottom: 0.7rem;
 }
