@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // NEU: Sets mit "Partizip" im Namen leicht rot hervorheben
       if (typeof set.name === "string" && set.name.includes("Partizip")) {
         // Hintergrund leicht rötlich
-        row.style.backgroundColor = "rgba(248, 113, 113, 0.08)";
+        row.style.backgroundColor = "rgba(248, 113, 113, 0.11)";
         // Textfarbe dezent rot
         // nameSpan.style.color = "#b91c1c";
       }
