@@ -93,11 +93,9 @@ document.addEventListener("DOMContentLoaded", () => {
       nameSpan.className = "set-name";
       nameSpan.textContent = set.name || `Set ${index + 1}`;
 
-      // NEU: Sets mit "Partizip" im Namen leicht rot hervorheben
+      // Sets mit "Partizip" im Namen leicht rot hervorheben (Liste)
       if (typeof set.name === "string" && set.name.includes("Partizip")) {
-        // Hintergrund leicht rötlich
         row.style.backgroundColor = "rgba(248, 113, 113, 0.11)";
-        // Textfarbe dezent rot
         // nameSpan.style.color = "#b91c1c";
       }
 
@@ -132,12 +130,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
     cardSideLabelEl.textContent = "";
     cardContentEl.textContent = "";
+    // Hintergrund zurücksetzen
+    cardContentEl.style.backgroundColor = "transparent";
   }
 
   function updateCardDisplay() {
     if (!state.currentCard) return;
 
-    // Vorder-/Rückseite nicht mehr anzeigen
+    // Ist das eine Karte aus einem Partizip-Set und sind wir auf der Rückseite?
+    const isPartizipBack =
+      !state.showingFront && state.currentCard.isPartizip === true;
+
+    // Kartenrückseite für Partizipien rosa einfärben
+    if (isPartizipBack) {
+      cardContentEl.style.backgroundColor = "rgba(248, 113, 113, 0.13)";
+    } else {
+      cardContentEl.style.backgroundColor = "transparent";
+    }
+
+    // Vorder- oder Rückseiten-Text anzeigen
     cardContentEl.textContent = state.showingFront
       ? state.currentCard.front
       : state.currentCard.back;
@@ -212,6 +223,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!set || !Array.isArray(set.cards)) return;
 
       const validCards = [];
+      const isPartizipSet =
+        typeof set.name === "string" && set.name.includes("Partizip");
 
       set.cards.forEach((card) => {
         if (
@@ -221,7 +234,9 @@ document.addEventListener("DOMContentLoaded", () => {
         ) {
           const normalizedCard = {
             front: card.front,
-            back: card.back
+            back: card.back,
+            // Merken, ob diese Karte aus einem Partizip-Set stammt
+            isPartizip: isPartizipSet
           };
 
           // Für "once" und "random"
