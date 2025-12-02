@@ -37,13 +37,13 @@ document.addEventListener("DOMContentLoaded", () => {
     state.mode = "randomBalanced";
   }
 
-  // --- Hilfsfunktionen ---
+  // ---------- Hilfsfunktionen ----------
 
   function showScreen(name) {
     if (name === "home") {
       homeScreen.classList.add("active");
       flipScreen.classList.remove("active");
-    } else {
+    } else if (name === "flip") {
       homeScreen.classList.remove("active");
       flipScreen.classList.add("active");
     }
@@ -130,25 +130,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
     cardSideLabelEl.textContent = "";
     cardContentEl.textContent = "";
-    // Hintergrund zurücksetzen
-    cardContentEl.style.backgroundColor = "transparent";
+
+    // Inline-Styles der Karte (z.B. Partizip-Rückseite) zurücksetzen
+    cardElement.style.background = "";
+    cardElement.style.boxShadow = "";
+    cardElement.style.borderColor = "";
   }
 
   function updateCardDisplay() {
     if (!state.currentCard) return;
 
-    // Ist das eine Karte aus einem Partizip-Set und sind wir auf der Rückseite?
     const isPartizipBack =
       !state.showingFront && state.currentCard.isPartizip === true;
 
-    // Kartenrückseite für Partizipien rosa einfärben
     if (isPartizipBack) {
-      cardContentEl.style.backgroundColor = "rgba(248, 113, 113, 0.13)";
+      // Ganze Rückseite der Karte rot (mit Rand, aber ohne Schatten)
+      cardElement.style.background =
+        "linear-gradient(135deg, #fee2e2, #fecaca)";
+      cardElement.style.boxShadow = "none";
+      cardElement.style.borderColor = "rgba(248, 113, 113, 0.9)";
     } else {
-      cardContentEl.style.backgroundColor = "transparent";
+      // Für alle anderen Fälle auf Standard-Styles aus dem CSS zurückfallen
+      cardElement.style.background = "";
+      cardElement.style.boxShadow = "";
+      cardElement.style.borderColor = "";
     }
 
-    // Vorder- oder Rückseiten-Text anzeigen
+    // Inhalt der Karte (Vorder- / Rückseite)
     cardContentEl.textContent = state.showingFront
       ? state.currentCard.front
       : state.currentCard.back;
@@ -178,36 +186,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const cardIndex = Math.floor(Math.random() * chosenSet.cards.length);
       state.currentCard = chosenSet.cards[cardIndex];
-
-      state.showingFront = true;
-      updateCardDisplay();
-      return;
-    }
-
-    // --- Modus "once" und "random" wie bisher mit flatCards ---
-
-    if (!state.flatCards.length) {
-      resetFlipScreen();
-      showScreen("home");
-      errorMessage.textContent = "Die ausgewählten Sets enthalten keine Karten.";
-      return;
-    }
-
-    if (state.mode === "once") {
-      if (state.currentIndex >= state.shuffledIndices.length) {
-        // alle Karten einmal gezeigt -> leise zurück zum Homescreen
+    } else {
+      // --- Modus "once" und "random" mit flatCards ---
+      if (!state.flatCards.length) {
         resetFlipScreen();
         showScreen("home");
+        errorMessage.textContent =
+          "Die ausgewählten Sets enthalten keine Karten.";
         return;
       }
 
-      const indexInFlat = state.shuffledIndices[state.currentIndex];
-      state.currentIndex += 1;
-      state.currentCard = state.flatCards[indexInFlat];
-    } else if (state.mode === "random") {
-      // random: jedes Mal zufällig eine Karte
-      const randomIndex = Math.floor(Math.random() * state.flatCards.length);
-      state.currentCard = state.flatCards[randomIndex];
+      if (state.mode === "once") {
+        if (state.currentIndex >= state.shuffledIndices.length) {
+          // alle Karten einmal gezeigt -> leise zurück zum Homescreen
+          resetFlipScreen();
+          showScreen("home");
+          return;
+        }
+
+        const indexInFlat = state.shuffledIndices[state.currentIndex];
+        state.currentIndex += 1;
+        state.currentCard = state.flatCards[indexInFlat];
+      } else if (state.mode === "random") {
+        // random: jedes Mal zufällig eine Karte
+        const randomIndex = Math.floor(Math.random() * state.flatCards.length);
+        state.currentCard = state.flatCards[randomIndex];
+      }
     }
 
     state.showingFront = true;
@@ -295,7 +299,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // --- Event Listener ---
+  // ---------- Event Listener ----------
 
   setList.addEventListener("change", (event) => {
     if (event.target && event.target.classList.contains("set-checkbox")) {
@@ -364,7 +368,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // --- Daten initial aus data.js übernehmen ---
+  // ---------- Daten aus data.js laden ----------
 
   if (typeof CARD_SETS !== "undefined" && Array.isArray(CARD_SETS)) {
     state.sets = CARD_SETS;
