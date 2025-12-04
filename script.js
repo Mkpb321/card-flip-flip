@@ -119,6 +119,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderCard() {
     if (!state.currentCard) return;
+// Karte nur rot färben, wenn Partizip *und* auf der Rückseite
+if (state.currentCard.isPartizip && !state.showingFront) {
+  cardElement.classList.add("partizip-card");
+} else {
+  cardElement.classList.remove("partizip-card");
+}
 
     cardContentEl.innerHTML = "";
 

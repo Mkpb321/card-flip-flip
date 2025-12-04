@@ -439,3 +439,10 @@ button:active {
     padding-inline: 0.7rem;
   }
 }
+
+/* Partizip-Karten – kompletter Kartenhintergrund rot */
+.partizip-card {
+  background: radial-gradient(circle at top, #fee2e2 0, #ffe4e6 40%, #fff1f2 100%) !important;
+  border-color: rgba(244, 63, 94, 0.45) !important;
+}
+
