@@ -313,7 +313,6 @@ button:active {
   flex: 1;
   max-width: 940px;
   min-height: 420px;
-  height: 100%;
   border-radius: 32px;
   background: radial-gradient(circle at top, #eef2ff 0, #ffffff 40%, #f9fafb 100%);
   box-shadow: 0 26px 60px rgba(15, 23, 42, 0.25);

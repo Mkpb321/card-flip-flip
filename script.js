@@ -193,13 +193,27 @@ document.addEventListener("DOMContentLoaded", () => {
     if (state.mode === "randomBalanced") {
       if (!state.selectedSets.length) return resetToHome("Keine gültigen Karten.");
 
-      const chosenSet =
-        state.selectedSets[Math.floor(Math.random() * state.selectedSets.length)];
+  let newCard = null;
+  let attempts = 0;
+  const MAX_ATTEMPTS = 20;
 
-      if (!chosenSet.cards?.length) return resetToHome("Keine gültigen Karten.");
+  do {
+    const chosenSet =
+      state.selectedSets[Math.floor(Math.random() * state.selectedSets.length)];
 
-      state.currentCard =
-        chosenSet.cards[Math.floor(Math.random() * chosenSet.cards.length)];
+    if (!chosenSet.cards?.length) return resetToHome("Keine gültigen Karten.");
+
+    newCard = chosenSet.cards[Math.floor(Math.random() * chosenSet.cards.length)];
+
+    attempts++;
+  } while (
+    attempts < MAX_ATTEMPTS &&
+    state.currentCard &&
+    newCard.front === state.currentCard.front &&
+    newCard.back === state.currentCard.back
+  );
+
+  state.currentCard = newCard;
     } else {
       if (!state.flatCards.length) return resetToHome("Keine gültigen Karten.");
 
