@@ -312,6 +312,7 @@ button:active {
   position: relative;
   flex: 1;
   max-width: 940px;
+  min-height: 420px;
   height: 100%;
   border-radius: 32px;
   background: radial-gradient(circle at top, #eef2ff 0, #ffffff 40%, #f9fafb 100%);
