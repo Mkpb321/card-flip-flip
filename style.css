@@ -311,13 +311,13 @@ button:active {
 .card {
   position: relative;
   flex: 1;
-  max-width: 940px;        /* größer */
+  max-width: 940px;
   height: 100%;
-  border-radius: 32px;     /* etwas größer/cleaner */
+  border-radius: 32px;
   background: radial-gradient(circle at top, #eef2ff 0, #ffffff 40%, #f9fafb 100%);
   box-shadow: 0 26px 60px rgba(15, 23, 42, 0.25);
   border: 1px solid rgba(184, 148, 148, 0.35);
-  padding: 1.2rem 1.2rem 10rem; /* mehr Innenabstand */
+  padding: 1.2rem 1.2rem 10rem;
   display: flex;
   flex-direction: column;
   cursor: pointer;
@@ -348,21 +348,21 @@ button:active {
   margin-bottom: 0.4rem;
 }
 
-/* Karteninhalt – Text soll weiter oben sitzen */
+/* Karteninhalt – als vertikale Liste, oben ausgerichtet, horizontal zentriert */
 .card-content {
   flex: 1;
   margin-top: 0.1rem;
   padding: 0.8rem 0.7rem 1rem;
   border-radius: 2px;
-  background: transparent;   /* Hintergrund transparent */
-  box-shadow: none;          /* Border/Shadow entfernt */
+  background: transparent;
+  box-shadow: none;
   display: flex;
-  flex-direction: column;    /* vertikale Liste */
-  justify-content: flex-start;  /* oben ausgerichtet */
-  align-items: center;       /* horizontal zentriert */
-  text-align: center;        /* Text mittig */
+  flex-direction: column;
+  justify-content: flex-start; /* oben ausgerichtet */
+  align-items: center;         /* horizontal zentriert */
+  text-align: center;
   font-size: clamp(1.6rem, 3.5vw + 0.8rem, 2.55rem);
-  font-weight: 650;
+  font-weight: 600;
   line-height: 1.3;
   color: #111827;
   word-wrap: break-word;
@@ -381,10 +381,25 @@ button:active {
   border-radius: 999px;
 }
 
-/* Haupt-Textblöcke für Vorder- / Rückseite */
-.main-front,
+/* Header über der ganzen Kartenbreite,
+   zeigt immer die Vorderseite */
+.front-header-big {
+  align-self: stretch;                 /* volle Breite innerhalb der Karte */
+  background: var(--accent-soft);      /* farbiger Bereich */
+  padding: 0.8rem 1rem;                /* dynamische Höhe */
+  border-radius: 16px;                 /* leicht abgerundet */
+  margin-bottom: 0.7rem;
+
+  font-size: 1em;                      /* gleiche Größe wie restlicher Text */
+  font-weight: 650;
+  color: var(--accent-strong);
+  text-align: center;
+  white-space: normal;
+  word-break: break-word;
+}
+
+/* Haupt-Textblock für Rückseite */
 .main-back {
-  /* gleiche Schriftgröße wie card-content, daher kein extra font-size */
   margin-bottom: 0.35rem;
 }
 
@@ -397,7 +412,7 @@ button:active {
   border-top: 1px solid #e5e7eb;
 }
 
-/* Variante-Einträge (ausgewählte + nicht ausgewählte) */
+/* Varianten-Einträge (ausgewählte + nicht ausgewählte) */
 .variant-entry {
   margin-top: 0.15rem;
 }

@@ -2,15 +2,13 @@
 
 const state = {
   sets: [],
-  mode: "randomBalanced", // Standard: randomBalanced
+  mode: "randomBalanced",
   flatCards: [],
   shuffledIndices: [],
   currentIndex: 0,
   currentCard: null,
   showingFront: true,
-  // Für den balanced-Modus: Sets mit ihren Karten separat speichern
   selectedSets: [],
-  // Merken, welche Sets beim Start ausgewählt waren (Indices in state.sets)
   selectedSetIndices: []
 };
 
@@ -27,10 +25,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const backToHomeBtn = document.getElementById("back-to-home");
   const cardElement = document.getElementById("card");
-  const cardSideLabelEl = document.getElementById("card-side-label");
   const cardContentEl = document.getElementById("card-content");
 
-  // Standardmodus: randomBalanced
   const randomBalancedRadio = document.querySelector(
     'input[name="mode"][value="randomBalanced"]'
   );
@@ -39,32 +35,21 @@ document.addEventListener("DOMContentLoaded", () => {
     state.mode = "randomBalanced";
   }
 
-  // ---------- Hilfsfunktionen ----------
+  // ---------- Helper ----------
 
   function showScreen(name) {
-    if (name === "home") {
-      homeScreen.classList.add("active");
-      flipScreen.classList.remove("active");
-    } else if (name === "flip") {
-      homeScreen.classList.remove("active");
-      flipScreen.classList.add("active");
-    }
+    homeScreen.classList.toggle("active", name === "home");
+    flipScreen.classList.toggle("active", name === "flip");
   }
 
   function getSelectedSetIndices() {
-    const checkboxes = document.querySelectorAll(".set-checkbox");
-    const indices = [];
-    checkboxes.forEach((cb) => {
-      if (cb.checked) {
-        indices.push(parseInt(cb.dataset.index, 10));
-      }
-    });
-    return indices;
+    return [...document.querySelectorAll(".set-checkbox")]
+      .filter(cb => cb.checked)
+      .map(cb => parseInt(cb.dataset.index, 10));
   }
 
   function updateStartButtonState() {
-    const selected = getSelectedSetIndices();
-    startButton.disabled = selected.length === 0 || !state.sets.length;
+    startButton.disabled = getSelectedSetIndices().length === 0 || !state.sets.length;
   }
 
   function renderSetList() {
@@ -88,36 +73,31 @@ document.addEventListener("DOMContentLoaded", () => {
       const checkbox = document.createElement("input");
       checkbox.type = "checkbox";
       checkbox.className = "set-checkbox";
-      checkbox.dataset.index = String(index);
-      checkbox.checked = false; // Beim Laden: NICHT ausgewählt
+      checkbox.dataset.index = index;
+      checkbox.checked = false;
 
       const nameSpan = document.createElement("span");
       nameSpan.className = "set-name";
       nameSpan.textContent = set.name || `Set ${index + 1}`;
 
-      // Sets mit "Partizip" im Namen leicht rot hervorheben (Liste)
-      if (typeof set.name === "string" && set.name.includes("Partizip")) {
-        row.style.backgroundColor = "rgba(248, 113, 113, 0.11)";
-        // nameSpan.style.color = "#b91c1c";
+      if (String(set.name).includes("Partizip")) {
+        row.style.backgroundColor = "rgba(248,113,113,0.11)";
       }
 
       label.appendChild(checkbox);
       label.appendChild(nameSpan);
       row.appendChild(label);
-
       setList.appendChild(row);
     });
 
     updateStartButtonState();
   }
 
-  function shuffleIndices(length) {
-    const arr = Array.from({ length }, (_, i) => i);
-    for (let i = arr.length - 1; i > 0; i -= 1) {
+  function shuffleIndices(n) {
+    const arr = [...Array(n).keys()];
+    for (let i = n - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      const temp = arr[i];
-      arr[i] = arr[j];
-      arr[j] = temp;
+      [arr[i], arr[j]] = [arr[j], arr[i]];
     }
     return arr;
   }
@@ -126,236 +106,171 @@ document.addEventListener("DOMContentLoaded", () => {
     state.flatCards = [];
     state.selectedSets = [];
     state.selectedSetIndices = [];
-    state.currentCard = null;
     state.currentIndex = 0;
+    state.currentCard = null;
     state.shuffledIndices = [];
     state.showingFront = true;
 
-    cardSideLabelEl.textContent = "";
     cardContentEl.innerHTML = "";
-
-    // Inline-Styles der Karte (z.B. Partizip-Rückseite) zurücksetzen
-    cardElement.style.background = "";
-    cardElement.style.boxShadow = "";
-    cardElement.style.borderColor = "";
+    cardElement.style = "";
   }
 
-  function updateCardDisplay() {
+  // ---------- RENDERING ----------
+
+  function renderCard() {
     if (!state.currentCard) return;
 
-    const isPartizipBack =
-      !state.showingFront && state.currentCard.isPartizip === true;
-
-    if (isPartizipBack) {
-      // Ganze Rückseite der Karte rot (mit Rand, aber ohne Schatten)
-      cardElement.style.background =
-        "linear-gradient(135deg, #fee2e2, #fecaca)";
-      cardElement.style.boxShadow = "none";
-      cardElement.style.borderColor = "rgba(248, 113, 113, 0.9)";
-    } else {
-      // Für alle anderen Fälle auf Standard-Styles aus dem CSS zurückfallen
-      cardElement.style.background = "";
-      cardElement.style.boxShadow = "";
-      cardElement.style.borderColor = "";
-    }
-
-    // Inhalt der Karte (Vorder- / Rückseite) komplett neu aufbauen
     cardContentEl.innerHTML = "";
 
+    // ---------------------------------------------
+    // HEADER-BEREICH (IMMER VORDERSEITE)
+    // ---------------------------------------------
+    const head = document.createElement("div");
+    head.className = "front-header-big";
+    head.textContent = state.currentCard.front;
+    cardContentEl.appendChild(head);
+
+    // ---------------------------------------------
+    // FALL 1: VORDERSEITE
+    // ---------------------------------------------
     if (state.showingFront) {
-      // Vorderseite: ein einzelner Block, oben ausgerichtet, horizontal zentriert
-      const frontDiv = document.createElement("div");
-      frontDiv.className = "main-front";
-      frontDiv.textContent = state.currentCard.front;
-      cardContentEl.appendChild(frontDiv);
-      return;
+      return; // nur Header, sonst nichts
     }
 
-    // Rückseite: erst aktuelle Karte, dann Varianten
-    const mainDiv = document.createElement("div");
-    mainDiv.className = "main-back";
-    mainDiv.textContent = state.currentCard.back;
-    cardContentEl.appendChild(mainDiv);
+    // ---------------------------------------------
+    // FALL 2: RÜCKSEITE
+    // ---------------------------------------------
+    const mainBack = document.createElement("div");
+    mainBack.className = "main-back";
+    mainBack.textContent = state.currentCard.back;
+    cardContentEl.appendChild(mainBack);
 
     const currentFront = state.currentCard.front;
     const currentBack = state.currentCard.back;
 
-    const selectedBacks = [];
-    const unselectedBacks = [];
+    const selectedVariantBacks = [];
+    const unselectedVariantBacks = [];
 
-    // Alle Karten aus ALLEN Sets durchsuchen, die exakt dieselbe Vorderseite haben
+    // passendes Matching über ALLE Sets
     state.sets.forEach((set, setIndex) => {
-      if (!set || !Array.isArray(set.cards)) return;
+      const isSelected = state.selectedSetIndices.includes(setIndex);
+      if (!set.cards) return;
 
-      const isSelectedSet = state.selectedSetIndices.includes(setIndex);
-
-      set.cards.forEach((card) => {
-        if (
-          !card ||
-          typeof card.front !== "string" ||
-          typeof card.back !== "string"
-        ) {
-          return;
-        }
-
-        // nur Karten mit exakt gleicher Vorderseite
+      set.cards.forEach(card => {
+        if (!card.front || !card.back) return;
         if (card.front !== currentFront) return;
+        if (card.back === currentBack) return;
 
-        // Hauptkarte nicht nochmal in der Liste anzeigen (wenn Front UND Back identisch)
-        if (card.back === currentBack) {
-          return;
-        }
-
-        if (isSelectedSet) {
-          selectedBacks.push(card.back);
-        } else {
-          unselectedBacks.push(card.back);
-        }
+        if (isSelected) selectedVariantBacks.push(card.back);
+        else unselectedVariantBacks.push(card.back);
       });
     });
 
-    // Wenn mindestens eine Variante existiert:
-    if (selectedBacks.length || unselectedBacks.length) {
-      // genau EINE Trennlinie nach dem ersten Eintrag
+    if (selectedVariantBacks.length || unselectedVariantBacks.length) {
       const hr = document.createElement("hr");
       hr.className = "variant-separator";
       cardContentEl.appendChild(hr);
 
-      // zuerst: Rückseiten aus ausgewählten Sets
-      selectedBacks.forEach((backText) => {
+      selectedVariantBacks.forEach(txt => {
         const div = document.createElement("div");
         div.className = "variant-entry selected";
-        div.textContent = backText;
+        div.textContent = txt;
         cardContentEl.appendChild(div);
       });
 
-      // dann: Rückseiten aus NICHT ausgewählten Sets (grau)
-      unselectedBacks.forEach((backText) => {
+      unselectedVariantBacks.forEach(txt => {
         const div = document.createElement("div");
         div.className = "variant-entry not-selected";
-        div.textContent = backText;
+        div.textContent = txt;
         cardContentEl.appendChild(div);
       });
     }
   }
 
+  // ---------- Card Selection ----------
+
   function startNewCard() {
-    // --- Unendlich Balanced: zuerst Set wählen, dann Karte ---
     if (state.mode === "randomBalanced") {
-      if (!state.selectedSets.length) {
-        resetFlipScreen();
-        showScreen("home");
-        errorMessage.textContent =
-          "Die ausgewählten Sets enthalten keine gültigen Karten.";
-        return;
-      }
+      if (!state.selectedSets.length) return resetToHome("Keine gültigen Karten.");
 
-      const setIndex = Math.floor(Math.random() * state.selectedSets.length);
-      const chosenSet = state.selectedSets[setIndex];
+      const chosenSet =
+        state.selectedSets[Math.floor(Math.random() * state.selectedSets.length)];
 
-      if (!chosenSet.cards || !chosenSet.cards.length) {
-        resetFlipScreen();
-        showScreen("home");
-        errorMessage.textContent =
-          "Die ausgewählten Sets enthalten keine gültigen Karten.";
-        return;
-      }
+      if (!chosenSet.cards?.length) return resetToHome("Keine gültigen Karten.");
 
-      const cardIndex = Math.floor(Math.random() * chosenSet.cards.length);
-      state.currentCard = chosenSet.cards[cardIndex];
+      state.currentCard =
+        chosenSet.cards[Math.floor(Math.random() * chosenSet.cards.length)];
     } else {
-      // --- Modus "once" und "random" mit flatCards ---
-      if (!state.flatCards.length) {
-        resetFlipScreen();
-        showScreen("home");
-        errorMessage.textContent =
-          "Die ausgewählten Sets enthalten keine Karten.";
-        return;
-      }
+      if (!state.flatCards.length) return resetToHome("Keine gültigen Karten.");
 
       if (state.mode === "once") {
         if (state.currentIndex >= state.shuffledIndices.length) {
-          // alle Karten einmal gezeigt -> leise zurück zum Homescreen
-          resetFlipScreen();
-          showScreen("home");
-          return;
+          return resetToHome();
         }
-
-        const indexInFlat = state.shuffledIndices[state.currentIndex];
-        state.currentIndex += 1;
-        state.currentCard = state.flatCards[indexInFlat];
-      } else if (state.mode === "random") {
-        // random: jedes Mal zufällig eine Karte
-        const randomIndex = Math.floor(Math.random() * state.flatCards.length);
-        state.currentCard = state.flatCards[randomIndex];
+        const idx = state.shuffledIndices[state.currentIndex++];
+        state.currentCard = state.flatCards[idx];
+      } else {
+        state.currentCard =
+          state.flatCards[Math.floor(Math.random() * state.flatCards.length)];
       }
     }
 
     state.showingFront = true;
-    updateCardDisplay();
+    renderCard();
+  }
+
+  function resetToHome(msg) {
+    resetFlipScreen();
+    showScreen("home");
+    if (msg) errorMessage.textContent = msg;
   }
 
   function initFlipGame(selectedIndices) {
     const flat = [];
-    const selectedSetsForBalanced = [];
+    const balancedSets = [];
 
-    selectedIndices.forEach((setIndex) => {
-      const set = state.sets[setIndex];
-      if (!set || !Array.isArray(set.cards)) return;
+    selectedIndices.forEach(idx => {
+      const set = state.sets[idx];
+      if (!set?.cards) return;
 
-      const validCards = [];
-      const isPartizipSet =
-        typeof set.name === "string" && set.name.includes("Partizip");
+      const valid = [];
+      const isPartizip = String(set.name).includes("Partizip");
 
-      set.cards.forEach((card) => {
-        if (
-          card &&
-          typeof card.front === "string" &&
-          typeof card.back === "string"
-        ) {
-          const normalizedCard = {
-            front: card.front,
-            back: card.back,
-            // Merken, ob diese Karte aus einem Partizip-Set stammt
-            isPartizip: isPartizipSet
-          };
+      set.cards.forEach(card => {
+        if (!card.front || !card.back) return;
 
-          // Für "once" und "random"
-          flat.push(normalizedCard);
+        const c = {
+          front: card.front,
+          back: card.back,
+          isPartizip
+        };
 
-          // Für "randomBalanced"
-          validCards.push(normalizedCard);
-        }
+        flat.push(c);
+        valid.push(c);
       });
 
-      if (validCards.length > 0) {
-        selectedSetsForBalanced.push({
-          name: set.name || `Set ${setIndex + 1}`,
-          cards: validCards
+      if (valid.length) {
+        balancedSets.push({
+          name: set.name,
+          cards: valid
         });
       }
     });
 
-    if (!flat.length || !selectedSetsForBalanced.length) {
-      resetFlipScreen();
-      showScreen("home");
-      errorMessage.textContent =
-        "Die ausgewählten Sets enthalten keine gültigen Karten.";
-      return;
+    if (!flat.length || !balancedSets.length) {
+      return resetToHome("Die ausgewählten Sets enthalten keine gültigen Karten.");
     }
 
     state.flatCards = flat;
-    state.selectedSets = selectedSetsForBalanced;
+    state.selectedSets = balancedSets;
     state.selectedSetIndices = selectedIndices.slice();
-    state.currentCard = null;
     state.currentIndex = 0;
+    state.currentCard = null;
     state.showingFront = true;
 
-    if (state.mode === "once") {
-      state.shuffledIndices = shuffleIndices(flat.length);
-    } else {
-      state.shuffledIndices = [];
-    }
+    state.shuffledIndices = state.mode === "once"
+      ? shuffleIndices(flat.length)
+      : [];
 
     errorMessage.textContent = "";
     showScreen("flip");
@@ -363,51 +278,39 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function handleNext() {
-    if (!state.currentCard) {
-      startNewCard();
-      return;
-    }
+    if (!state.currentCard) return startNewCard();
 
-    // Erst Vorderseite, dann Rückseite, dann nächste Karte
     if (state.showingFront) {
       state.showingFront = false;
-      updateCardDisplay();
+      renderCard();
     } else {
       startNewCard();
     }
   }
 
-  // ---------- Event Listener ----------
+  // ---------- Events ----------
 
-  setList.addEventListener("change", (event) => {
-    if (event.target && event.target.classList.contains("set-checkbox")) {
+  setList.addEventListener("change", e => {
+    if (e.target.classList.contains("set-checkbox")) {
       updateStartButtonState();
     }
   });
 
   selectAllBtn.addEventListener("click", () => {
-    const checkboxes = document.querySelectorAll(".set-checkbox");
-    checkboxes.forEach((cb) => {
-      cb.checked = true;
-    });
+    document.querySelectorAll(".set-checkbox").forEach(cb => (cb.checked = true));
     updateStartButtonState();
   });
 
   selectNoneBtn.addEventListener("click", () => {
-    const checkboxes = document.querySelectorAll(".set-checkbox");
-    checkboxes.forEach((cb) => {
-      cb.checked = false;
-    });
+    document.querySelectorAll(".set-checkbox").forEach(cb => (cb.checked = false));
     updateStartButtonState();
   });
 
-  modeRadios.forEach((radio) => {
-    radio.addEventListener("change", (event) => {
-      if (event.target.checked) {
-        state.mode = event.target.value;
-      }
-    });
-  });
+  modeRadios.forEach(r =>
+    r.addEventListener("change", e => {
+      if (e.target.checked) state.mode = e.target.value;
+    })
+  );
 
   startButton.addEventListener("click", () => {
     const selected = getSelectedSetIndices();
@@ -415,45 +318,33 @@ document.addEventListener("DOMContentLoaded", () => {
       errorMessage.textContent = "Bitte mindestens ein Kartenset auswählen.";
       return;
     }
-    errorMessage.textContent = "";
     initFlipGame(selected);
   });
 
-  backToHomeBtn.addEventListener("click", (event) => {
-    event.stopPropagation(); // Klick soll nicht als "weiter" zählen
-    resetFlipScreen();
-    showScreen("home");
+  backToHomeBtn.addEventListener("click", e => {
+    e.stopPropagation();
+    resetToHome();
   });
 
-  // Auf den ganzen Flip-Screen klicken, um weiter zu gehen (auch unter der Karte)
-  flipScreen.addEventListener("click", (event) => {
-    // Klick auf Zurück-Button ignorieren
-    if (event.target === backToHomeBtn) return;
-    if (event.target.closest && event.target.closest("#back-to-home")) return;
+  flipScreen.addEventListener("click", e => {
+    if (e.target === backToHomeBtn) return;
+    if (e.target.closest?.("#back-to-home")) return;
     handleNext();
   });
 
-  // Flip per Space- oder Enter-Taste
-  document.addEventListener("keydown", (event) => {
+  document.addEventListener("keydown", e => {
     if (!flipScreen.classList.contains("active")) return;
-
-    const isSpace = event.code === "Space" || event.key === " ";
-    const isEnter = event.code === "Enter" || event.key === "Enter";
-
-    if (isSpace || isEnter) {
-      event.preventDefault();
+    if (e.code === "Space" || e.code === "Enter") {
+      e.preventDefault();
       handleNext();
     }
   });
 
-  // ---------- Daten aus data.js laden ----------
-
-  if (typeof CARD_SETS !== "undefined" && Array.isArray(CARD_SETS)) {
+  // Load data.js
+  if (Array.isArray(CARD_SETS)) {
     state.sets = CARD_SETS;
     renderSetList();
   } else {
-    errorMessage.textContent =
-      "Keine Kartensets in data.js gefunden. Bitte CARD_SETS prüfen.";
-    startButton.disabled = true;
+    errorMessage.textContent = "CARD_SETS fehlt in data.js!";
   }
 });
