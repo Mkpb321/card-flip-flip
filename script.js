@@ -9,7 +9,9 @@ const state = {
   currentCard: null,
   showingFront: true,
   // Für den balanced-Modus: Sets mit ihren Karten separat speichern
-  selectedSets: []
+  selectedSets: [],
+  // Merken, welche Sets beim Start ausgewählt waren (Indices in state.sets)
+  selectedSetIndices: []
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -123,13 +125,14 @@ document.addEventListener("DOMContentLoaded", () => {
   function resetFlipScreen() {
     state.flatCards = [];
     state.selectedSets = [];
+    state.selectedSetIndices = [];
     state.currentCard = null;
     state.currentIndex = 0;
     state.shuffledIndices = [];
     state.showingFront = true;
 
     cardSideLabelEl.textContent = "";
-    cardContentEl.textContent = "";
+    cardContentEl.innerHTML = "";
 
     // Inline-Styles der Karte (z.B. Partizip-Rückseite) zurücksetzen
     cardElement.style.background = "";
@@ -156,10 +159,84 @@ document.addEventListener("DOMContentLoaded", () => {
       cardElement.style.borderColor = "";
     }
 
-    // Inhalt der Karte (Vorder- / Rückseite)
-    cardContentEl.textContent = state.showingFront
-      ? state.currentCard.front
-      : state.currentCard.back;
+    // Inhalt der Karte (Vorder- / Rückseite) komplett neu aufbauen
+    cardContentEl.innerHTML = "";
+
+    if (state.showingFront) {
+      // Vorderseite: ein einzelner Block, oben ausgerichtet, horizontal zentriert
+      const frontDiv = document.createElement("div");
+      frontDiv.className = "main-front";
+      frontDiv.textContent = state.currentCard.front;
+      cardContentEl.appendChild(frontDiv);
+      return;
+    }
+
+    // Rückseite: erst aktuelle Karte, dann Varianten
+    const mainDiv = document.createElement("div");
+    mainDiv.className = "main-back";
+    mainDiv.textContent = state.currentCard.back;
+    cardContentEl.appendChild(mainDiv);
+
+    const currentFront = state.currentCard.front;
+    const currentBack = state.currentCard.back;
+
+    const selectedBacks = [];
+    const unselectedBacks = [];
+
+    // Alle Karten aus ALLEN Sets durchsuchen, die exakt dieselbe Vorderseite haben
+    state.sets.forEach((set, setIndex) => {
+      if (!set || !Array.isArray(set.cards)) return;
+
+      const isSelectedSet = state.selectedSetIndices.includes(setIndex);
+
+      set.cards.forEach((card) => {
+        if (
+          !card ||
+          typeof card.front !== "string" ||
+          typeof card.back !== "string"
+        ) {
+          return;
+        }
+
+        // nur Karten mit exakt gleicher Vorderseite
+        if (card.front !== currentFront) return;
+
+        // Hauptkarte nicht nochmal in der Liste anzeigen (wenn Front UND Back identisch)
+        if (card.back === currentBack) {
+          return;
+        }
+
+        if (isSelectedSet) {
+          selectedBacks.push(card.back);
+        } else {
+          unselectedBacks.push(card.back);
+        }
+      });
+    });
+
+    // Wenn mindestens eine Variante existiert:
+    if (selectedBacks.length || unselectedBacks.length) {
+      // genau EINE Trennlinie nach dem ersten Eintrag
+      const hr = document.createElement("hr");
+      hr.className = "variant-separator";
+      cardContentEl.appendChild(hr);
+
+      // zuerst: Rückseiten aus ausgewählten Sets
+      selectedBacks.forEach((backText) => {
+        const div = document.createElement("div");
+        div.className = "variant-entry selected";
+        div.textContent = backText;
+        cardContentEl.appendChild(div);
+      });
+
+      // dann: Rückseiten aus NICHT ausgewählten Sets (grau)
+      unselectedBacks.forEach((backText) => {
+        const div = document.createElement("div");
+        div.className = "variant-entry not-selected";
+        div.textContent = backText;
+        cardContentEl.appendChild(div);
+      });
+    }
   }
 
   function startNewCard() {
@@ -269,6 +346,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     state.flatCards = flat;
     state.selectedSets = selectedSetsForBalanced;
+    state.selectedSetIndices = selectedIndices.slice();
     state.currentCard = null;
     state.currentIndex = 0;
     state.showingFront = true;
